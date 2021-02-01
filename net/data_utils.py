@@ -76,15 +76,13 @@ class RESIDE_Dataset(data.Dataset):
         return len(self.haze_imgs)
     
 class My_Dataset(data.Dataset):
-    def __init__(self,path,train,size=crop_size,format='.png'):
-        super(RESIDE_Dataset,self).__init__()
-        self.size=size
+    def __init__(self, root_dir, train, size=crop_size):
+        super().__init__()
+        self.size = size
         print('crop size',size)
-        self.train=train
-        self.format=format
-        self.haze_imgs_dir=os.listdir(os.path.join(path,'hazy'))
-        self.haze_imgs=[os.path.join(path,'hazy',img) for img in self.haze_imgs_dir]
-        self.clear_dir=os.path.join(path,'clear')
+        self.train = train
+        self.root_dir, _, self.files = next(os.walk(root_dir))
+        
     def __getitem__(self, index):
         haze=Image.open(self.haze_imgs[index])
         if isinstance(self.size,int):
@@ -102,6 +100,16 @@ class My_Dataset(data.Dataset):
             clear=FF.crop(clear,i,j,h,w)
         haze,clear=self.augData(haze.convert("RGB") ,clear.convert("RGB") )
         return haze,clear
+    
+        name = osp.join(self.root_dir, self.files[idx])
+        
+        data = np.load(name, allow_pickle=True)
+        
+        haze  = torch.FloatTensor(data[0])
+        clear = torch.FloatTensor(data[1])
+        
+        return haze, clear
+    
     def augData(self,data,target):
         if self.train:
             rand_hor=random.randint(0,1)
@@ -116,18 +124,22 @@ class My_Dataset(data.Dataset):
         target=tfs.ToTensor()(target)
         return  data ,target
     def __len__(self):
-        return len(self.haze_imgs)
+        return len(self.files)
 
 import os
 pwd=os.getcwd()
 print(pwd)
-path='/home/zhilin007/VS/FFA-Net/data'#path to your 'data' folder
+# path='/home/zhilin007/VS/FFA-Net/data' # path to your 'data' folder
+path = '/root/dehaze/data/ld'
 
 ITS_train_loader=DataLoader(dataset=RESIDE_Dataset(path+'/RESIDE/ITS',train=True,size=crop_size),batch_size=BS,shuffle=True)
 ITS_test_loader=DataLoader(dataset=RESIDE_Dataset(path+'/RESIDE/SOTS/indoor',train=False,size='whole img'),batch_size=1,shuffle=False)
 
 OTS_train_loader=DataLoader(dataset=RESIDE_Dataset(path+'/RESIDE/OTS',train=True,format='.jpg'),batch_size=BS,shuffle=True)
 OTS_test_loader=DataLoader(dataset=RESIDE_Dataset(path+'/RESIDE/SOTS/outdoor',train=False,size='whole img',format='.png'),batch_size=1,shuffle=False)
+
+MY_train_loader = DataLoader(dataset=My_Dataset(path + '/train'), batch_size=BS, shuffle=True)
+MY_test_loader  = DataLoader(dataset=My_Dataset(path + '/val'), batch_size=BS, shuffle=False)
 
 if __name__ == "__main__":
     pass

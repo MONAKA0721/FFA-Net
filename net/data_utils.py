@@ -99,7 +99,6 @@ class My_Dataset(data.Dataset):
             haze=FF.crop(haze,i,j,h,w)
             clear=FF.crop(clear,i,j,h,w)
         haze,clear=self.augData(haze.convert("RGB") ,clear.convert("RGB") )
-        return haze,clear
     
         name = osp.join(self.root_dir, self.files[idx])
         

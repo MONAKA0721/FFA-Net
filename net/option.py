@@ -27,11 +27,11 @@ parser.add_argument('--crop_size',type=int,default=240,help='Takes effect when u
 parser.add_argument('--no_lr_sche',action='store_true',help='no lr cos schedule')
 parser.add_argument('--perloss',action='store_true',help='perceptual loss')
 
-opt=parser.parse_args()
-opt.device='cuda' if torch.cuda.is_available() else 'cpu'
-model_name=opt.trainset+'_'+opt.net.split('.')[0]+'_'+str(opt.gps)+'_'+str(opt.blocks)
-opt.model_dir=opt.model_dir+model_name+'.pk'
-log_dir='logs/'+model_name
+opt = parser.parse_args()
+opt.device = 'cuda:2' if torch.cuda.is_available() else 'cpu'
+model_name = opt.trainset+'_'+opt.net.split('.')[0]+'_'+str(opt.gps)+'_'+str(opt.blocks)
+opt.model_dir = opt.model_dir + model_name + '.pk'
+log_dir = 'logs/' + model_name
 
 print(opt)
 print('model_dir:',opt.model_dir)

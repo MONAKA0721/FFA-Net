@@ -140,8 +140,8 @@ def test(net,loader_test,max_psnr,max_ssim,step):
 if __name__ == "__main__":
 	loader_train=loaders_[opt.trainset]
 	loader_test=loaders_[opt.testset]
-	net=models_[opt.net]
-	net=net.to(opt.device)
+	net = models_[opt.net]
+	net = net.to(opt.device)
 	if opt.device=='cuda':
 # 		net=torch.nn.DataParallel(net)
 		cudnn.benchmark=True

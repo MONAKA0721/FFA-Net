@@ -21,10 +21,12 @@ models_={
 	'ffa':FFA(gps=opt.gps,blocks=opt.blocks),
 }
 loaders_={
-	'its_train':ITS_train_loader,
-	'its_test':ITS_test_loader,
-	'ots_train':OTS_train_loader,
-	'ots_test':OTS_test_loader
+# 	'its_train':ITS_train_loader,
+# 	'its_test':ITS_test_loader,
+# 	'ots_train':OTS_train_loader,
+# 	'ots_test':OTS_test_loader,
+    'my_train': my_train_loader,
+    'my_test': my_test_loader
 }
 start_time=time.time()
 T=opt.steps	
@@ -141,7 +143,7 @@ if __name__ == "__main__":
 	net=models_[opt.net]
 	net=net.to(opt.device)
 	if opt.device=='cuda':
-		net=torch.nn.DataParallel(net)
+# 		net=torch.nn.DataParallel(net)
 		cudnn.benchmark=True
 	criterion = []
 	criterion.append(nn.L1Loss().to(opt.device))
